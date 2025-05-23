@@ -3,4 +3,12 @@ def foo():
 
 class Bar:
     def method(self):
-        pass
+        print("Method called")
+
+    def _private_method(self):
+        print("Private method")
+
+class Baz:
+    class Nested:
+        def nested_method(self):
+            print("Nested method")
