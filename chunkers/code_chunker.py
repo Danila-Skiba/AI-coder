@@ -1,32 +1,56 @@
-import ast
-from typing import List, Dict
+import re
 
 class CodeChunker:
-    def chunk_code(self, code: str, filename: str) -> List[Dict]:
-        tree = ast.parse(code)
+    func_pattern = re.compile(r"^def\s+(\w+)\s*\(")
+    class_pattern = re.compile(r"^class\s+(\w+)\s*[:\(]")
+
+    def __init__(self, content, filename):
+        self.content = content.splitlines()
+        self.filename = filename
+
+    def chunk(self):
         chunks = []
+        current_section = None
+        current_content = []
+        start_line = 1
 
-        for node in ast.walk(tree):
-            if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef, ast.ClassDef)):
-                start_line = node.lineno
-                end_line = getattr(node, 'end_lineno', None)
-                if end_line is None:
-                    end_line = start_line + 10  # приблизительно
+        for i, line in enumerate(self.content, start=1):
+            func_match = self.func_pattern.match(line)
+            class_match = self.class_pattern.match(line)
 
-                code_lines = code.splitlines()
-                chunk_code = "\n".join(code_lines[start_line - 1:end_line])
+            if func_match or class_match:
+                if current_section is not None:
+                    chunks.append({
+                        "id": f"{self.filename}_{current_section}_{start_line}",
+                        "type": "code",
+                        "file": self.filename,
+                        "section": current_section,
+                        "content": "\n".join(current_content),
+                        "start_line": start_line,
+                        "end_line": i - 1,
+                        "source": "code",
+                        "chunk_type": "code",
+                        "linked_chunks": []
+                    })
+                current_section = func_match.group(1) if func_match else class_match.group(1)
+                current_content = [line]
+                start_line = i
+            else:
+                if current_section is not None:
+                    current_content.append(line)
 
-                chunk = {
-                    "id": f"{filename}_{node.name}_{start_line}",
-                    "type": "code",
-                    "file": filename,
-                    "section": node.name,
-                    "content": chunk_code,
-                    "start_line": start_line,
-                    "end_line": end_line,
-                    "source": "code",
-                    "chunk_type": "code",
-                    "linked_chunks": []  # сюда будем добавлять связанные чанки документации
-                }
-                chunks.append(chunk)
+        if current_section is not None:
+            chunks.append({
+                "id": f"{self.filename}_{current_section}_{start_line}",
+                "type": "code",
+                "file": self.filename,
+                "section": current_section,
+                "content": "\n".join(current_content),
+                "start_line": start_line,
+                "end_line": len(self.content),
+                "source": "code",
+                "chunk_type": "code",
+                "linked_chunks": []
+            })
+
         return chunks
