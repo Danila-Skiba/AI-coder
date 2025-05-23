@@ -11,10 +11,10 @@ class CodeChunker:
                 start_line = node.lineno
                 end_line = getattr(node, 'end_lineno', None)
                 if end_line is None:
-                    end_line = start_line + 10  # примерно
+                    end_line = start_line + 10  # приблизительно
 
                 code_lines = code.splitlines()
-                chunk_code = "\n".join(code_lines[start_line-1:end_line])
+                chunk_code = "\n".join(code_lines[start_line - 1:end_line])
 
                 chunk = {
                     "id": f"{filename}_{node.name}_{start_line}",
@@ -24,7 +24,9 @@ class CodeChunker:
                     "content": chunk_code,
                     "start_line": start_line,
                     "end_line": end_line,
-                    "source": "code"
+                    "source": "code",
+                    "chunk_type": "code",
+                    "linked_chunks": []  # сюда будем добавлять связанные чанки документации
                 }
                 chunks.append(chunk)
         return chunks

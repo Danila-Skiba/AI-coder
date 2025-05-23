@@ -1,5 +1,5 @@
-from typing import List, Dict
 import re
+from typing import List, Dict
 
 class DocChunker:
     header_pattern = re.compile(r"^(#{1,6})\s+(.*)")
@@ -22,7 +22,9 @@ class DocChunker:
                     "file": filename,
                     "section": current_header,
                     "content": chunk_text,
-                    "source": "doc"
+                    "source": "doc",
+                    "chunk_type": "documentation",
+                    "linked_chunks": []  # сюда будем добавлять связанные чанки кода
                 }
                 chunks.append(chunk)
 

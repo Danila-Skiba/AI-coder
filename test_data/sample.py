@@ -3,4 +3,4 @@ def foo():
 
 class Bar:
     def method(self):
-        return 42
+        pass
