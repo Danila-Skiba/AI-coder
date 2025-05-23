@@ -1,0 +1,6 @@
+{"id": "sample.md_chunk_1", "type": "doc", "file": "sample.md", "section": "Введение", "content": "# Введение\n\nЭто пример документации.", "source": "doc"}
+{"id": "sample.md_chunk_2", "type": "doc", "file": "sample.md", "section": "Раздел 1", "content": "## Раздел 1\n\nТекст раздела 1.", "source": "doc"}
+{"id": "sample.md_chunk_3", "type": "doc", "file": "sample.md", "section": "Раздел 2", "content": "## Раздел 2\n\nТекст раздела 2.", "source": "doc"}
+{"id": "sample.py_foo_1", "type": "code", "file": "sample.py", "section": "foo", "content": "def foo():\n    print(\"Hello\")", "start_line": 1, "end_line": 2, "source": "code"}
+{"id": "sample.py_Bar_4", "type": "code", "file": "sample.py", "section": "Bar", "content": "class Bar:\n    def method(self):\n        return 42", "start_line": 4, "end_line": 6, "source": "code"}
+{"id": "sample.py_method_5", "type": "code", "file": "sample.py", "section": "method", "content": "    def method(self):\n        return 42", "start_line": 5, "end_line": 6, "source": "code"}
