@@ -16,13 +16,14 @@ class DocChunker:
         for i, line in enumerate(self.content, start=1):
             header_match = self.header_pattern.match(line)
             if header_match:
+                # Если сейчас есть накопленный чанк — сохраняем
                 if current_section is not None:
                     chunks.append({
                         "id": f"{self.filename}_chunk_{start_line}",
                         "type": "doc",
                         "file": self.filename,
-                        "section": current_section,
-                        "content": "\n".join(current_content),
+                        "section": current_section.strip(),
+                        "content": "\n".join(current_content).rstrip(),
                         "start_line": start_line,
                         "end_line": i - 1,
                         "source": "doc",
@@ -36,13 +37,14 @@ class DocChunker:
                 if current_section is not None:
                     current_content.append(line)
 
-        if current_section is not None:
+        # Добавляем последний накопленный чанк
+        if current_section is not None and current_content:
             chunks.append({
                 "id": f"{self.filename}_chunk_{start_line}",
                 "type": "doc",
                 "file": self.filename,
-                "section": current_section,
-                "content": "\n".join(current_content),
+                "section": current_section.strip(),
+                "content": "\n".join(current_content).rstrip(),
                 "start_line": start_line,
                 "end_line": len(self.content),
                 "source": "doc",

@@ -6,17 +6,19 @@ def chunk_documents_and_code(doc_text, code_text, doc_filename, code_filename):
     doc_chunks = DocChunker(doc_text, doc_filename).chunk()
     code_chunks = CodeChunker(code_text, code_filename).chunk()
 
-    # Связываем чанки с одинаковым именем секции
-    doc_map = {chunk["section"]: chunk for chunk in doc_chunks}
-    code_map = {chunk["section"]: chunk for chunk in code_chunks}
+    # Создаём нормализованные словари для связывания (игнорируем регистр и пробелы)
+    def normalize_key(s):
+        return s.lower().strip()
+
+    doc_map = {normalize_key(chunk["section"]): chunk for chunk in doc_chunks}
+    code_map = {normalize_key(chunk["section"]): chunk for chunk in code_chunks}
 
     for sec, code_chunk in code_map.items():
         if sec in doc_map:
-            # Добавляем ссылки в обе стороны
+            # Связываем чанки в обе стороны
             code_chunk["linked_chunks"].append(doc_map[sec]["id"])
             doc_map[sec]["linked_chunks"].append(code_chunk["id"])
 
-    # Возвращаем объединённый список чанков
     return doc_chunks + code_chunks
 
 if __name__ == "__main__":
@@ -39,7 +41,6 @@ class Bar:
 
     chunks = chunk_documents_and_code(doc_text, code_text, "sample.md", "sample.py")
 
-    # Сохраняем чанки в файл chunks.jsonl
     with open("chunks.jsonl", "w", encoding="utf-8") as f:
         for chunk in chunks:
             f.write(json.dumps(chunk, ensure_ascii=False) + "\n")

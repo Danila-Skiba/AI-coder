@@ -1,8 +1,9 @@
 import re
 
 class CodeChunker:
-    func_pattern = re.compile(r"^def\s+(\w+)\s*\(")
-    class_pattern = re.compile(r"^class\s+(\w+)\s*[:\(]")
+    # Регулярки обновлены для учёта отступов и многострочного объявления функций и классов
+    func_pattern = re.compile(r"^\s*def\s+(\w+)\s*\(")
+    class_pattern = re.compile(r"^\s*class\s+(\w+)\s*[:\(]")
 
     def __init__(self, content, filename):
         self.content = content.splitlines()
@@ -25,7 +26,7 @@ class CodeChunker:
                         "type": "code",
                         "file": self.filename,
                         "section": current_section,
-                        "content": "\n".join(current_content),
+                        "content": "\n".join(current_content).rstrip(),
                         "start_line": start_line,
                         "end_line": i - 1,
                         "source": "code",
@@ -39,13 +40,13 @@ class CodeChunker:
                 if current_section is not None:
                     current_content.append(line)
 
-        if current_section is not None:
+        if current_section is not None and current_content:
             chunks.append({
                 "id": f"{self.filename}_{current_section}_{start_line}",
                 "type": "code",
                 "file": self.filename,
                 "section": current_section,
-                "content": "\n".join(current_content),
+                "content": "\n".join(current_content).rstrip(),
                 "start_line": start_line,
                 "end_line": len(self.content),
                 "source": "code",
