@@ -91,7 +91,7 @@ class SmartCodeDocSystem:
         for i, filepath in enumerate(code_files):
             try:
                 text = filepath.read_text(encoding="utf-8")
-                if len(text.strip()) < 50:  # Пропускаем слишком короткие файлы
+                if len(text.strip()) < 10:  # Пропускаем слишком короткие файлы
                     continue
                     
                 chunks = self.text_splitter.split_text(text)
@@ -110,6 +110,8 @@ class SmartCodeDocSystem:
                     
             except Exception as e:
                 print(f"Ошибка при чтении {filepath}: {e}")
+
+        print(f"Загружено {len(code_files)} файлов кода")
         
         # Обрабатываем документацию (.md)
         print(f"Обработка документации из {doc_dir}")
@@ -117,7 +119,7 @@ class SmartCodeDocSystem:
         for i, filepath in enumerate(doc_files):
             try:
                 text = filepath.read_text(encoding="utf-8")
-                if len(text.strip()) < 50:
+                if len(text.strip()) < 10:
                     continue
                     
                 chunks = self.text_splitter.split_text(text)
