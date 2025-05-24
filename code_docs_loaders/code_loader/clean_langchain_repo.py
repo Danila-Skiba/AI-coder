@@ -1,5 +1,5 @@
 import os
-from settings import *
+from code_docs_loaders.settings import *
 
 
 def clean_langchain_repo():

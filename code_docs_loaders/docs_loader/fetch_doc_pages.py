@@ -4,8 +4,8 @@ from urllib.parse import urljoin, urlparse
 
 from playwright.async_api import async_playwright
 
-from docs_loader.save_html_and_md import save_html_and_md
-from settings import *
+from code_docs_loaders.docs_loader.save_html_and_md import save_html_and_md
+from code_docs_loaders.settings import *
 
 
 async def fetch_doc_pages():

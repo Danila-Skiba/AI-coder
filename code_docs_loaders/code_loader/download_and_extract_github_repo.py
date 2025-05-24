@@ -1,5 +1,6 @@
 import requests, zipfile, io, os, shutil
-from settings import *
+from code_docs_loaders.settings import *
+
 
 def download_and_extract_github_repo():
     """

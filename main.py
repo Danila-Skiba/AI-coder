@@ -1,11 +1,13 @@
 import asyncio
 
-from code_loader.clean_langchain_repo import clean_langchain_repo
-from code_loader.download_and_extract_github_repo import download_and_extract_github_repo
-from docs_loader.fetch_doc_pages import fetch_doc_pages
+from code_docs_loaders.code_loader.clean_langchain_repo import clean_langchain_repo
+from code_docs_loaders.code_loader.download_and_extract_github_repo import download_and_extract_github_repo
+from code_docs_loaders.docs_loader.fetch_doc_pages import fetch_doc_pages
 
 if __name__ == "__main__":
     asyncio.run(fetch_doc_pages())
 
     download_and_extract_github_repo()
     clean_langchain_repo()
+
+

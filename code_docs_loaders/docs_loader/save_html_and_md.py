@@ -1,6 +1,7 @@
 import os
 from markdownify import markdownify as md
-from settings import *
+from code_docs_loaders.settings import *
+
 
 def save_html_and_md(content: str, path: str):
     """
