@@ -6,4 +6,5 @@ langchain-gigachat>=0.1.0
 faiss-cpu>=1.7.4
 transformers>=4.35.0
 sentence-transformers>=2.2.2
+chardet>=5.2.0
 pathlib
