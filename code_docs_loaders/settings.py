@@ -1,6 +1,4 @@
 # Setting up documentation downloads
-from pipes import SOURCE
-
 BASE_URL = "https://python.langchain.com/docs/"
 HTML_DIR = "html_docs"
 MD_DIR = "md_docs"

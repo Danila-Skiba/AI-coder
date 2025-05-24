@@ -29,3 +29,4 @@ def flatten_python_files() -> None:
 
                 dst_path = os.path.join(OUTPUT_DIR, dst_name)
                 shutil.copy2(src_path, dst_path)
+    print("[info] Finished copying .py files")
