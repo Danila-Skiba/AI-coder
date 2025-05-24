@@ -104,7 +104,7 @@ def initialize_rag_system():
         )
         
         # Создание векторного хранилища
-        vector_store = FAISS.from_documents(docs, embedding=embedding)
+        vector_store = FAISS.from_documents(documents, embedding=embedding)
         retriever = vector_store.as_retriever(search_kwargs={"k": K_DOCUMENTS})
         
         # Инициализация LLM
