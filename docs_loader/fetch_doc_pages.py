@@ -1,22 +1,24 @@
-import asyncio
 import os
+import shutil
 from urllib.parse import urljoin, urlparse
 
 from playwright.async_api import async_playwright
 
-from get_docs_test.save_html_and_md import save_html_and_md
+from docs_loader.save_html_and_md import save_html_and_md
 from settings import *
 
 
 async def fetch_doc_pages():
     """
-    Асинхронно загружает и сохраняет документацию LangChain в формате Markdown
+    Асинхронно загружает и сохраняет документацию в формате Markdown
 
-    Загружает все уникальные страницы документации с сайта LangChain,
-    извлекая только содержимое основного блока с классом `theme-doc-markdown markdown`
-    HTML и конвертированные Markdown-версии сохраняются в папки `html_docs/` и `md_docs/`
+    Загружает все уникальные страницы документации с сайта,
+    извлекая только содержимое основного блока с классом HTML_DOCS_CLASS из setting
+    HTML и конвертированные Markdown-версии сохраняются в папки HTML_DIR и MD_DIR
 
     Повторные загрузки уже скачанных страниц пропускаются
+
+    После загрузки и конвертации удаляет папку HTML_DIR
 
     Использует библиотеку Playwright для навигации по страницам и парсинга DOM
 
@@ -55,9 +57,9 @@ async def fetch_doc_pages():
             print(f"[fetch] {url}")
             try:
                 await page.goto(url, timeout=60000)
-                await page.wait_for_selector("div.theme-doc-markdown.markdown")
+                await page.wait_for_selector(HTML_DOCS_CLASS)
 
-                element = await page.query_selector("div.theme-doc-markdown.markdown")
+                element = await page.query_selector(HTML_DOCS_CLASS)
                 if not element:
                     print(f"[warn] Content not found at link {url}")
                     continue
@@ -69,7 +71,4 @@ async def fetch_doc_pages():
                 print(f"[error] Error while loading {url}: {e}")
 
         await browser.close()
-
-
-if __name__ == "__main__":
-    asyncio.run(fetch_doc_pages())
+        shutil.rmtree(HTML_DIR)

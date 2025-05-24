@@ -1,5 +1,5 @@
 .idea
 venv
-test_load_code/langchain/
-get_docs_test/html_docs/
-get_docs_test/md_docs/
+langchain/
+html_docs/
+md_docs/
