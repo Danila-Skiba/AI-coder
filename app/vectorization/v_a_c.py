@@ -138,6 +138,8 @@ class SmartCodeDocSystem:
                     
             except Exception as e:
                 print(f"Ошибка при чтении {filepath}: {e}")
+
+        print(f"Загружено {len(doc_files)} файлов документации")
         
         self.documents = documents
         print(f"Всего создано {len(documents)} чанков")
