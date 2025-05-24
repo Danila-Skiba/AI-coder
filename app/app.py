@@ -13,44 +13,53 @@ from langchain.chains import create_retrieval_chain
 from langchain_core.messages import HumanMessage, SystemMessage
 from langchain_gigachat.chat_models import GigaChat
 from langchain_gigachat.embeddings.gigachat import GigaChatEmbeddings
+import chardet
+from pathlib import Path
+from langchain.text_splitter import RecursiveCharacterTextSplitter
+from langchain.schema import Document
 
-# Настройка страницы
+
 st.set_page_config(
     page_title="LangChain RAG Assistant",
     page_icon="🤖",
     layout="wide"
 )
 
-# Заголовок приложения
 st.title("🤖 LangChain RAG Assistant")
 st.markdown("Задайте вопрос о библиотеке LangChain")
 
-# Скрытые настройки (хранятся в переменных окружения или конфигурационном файле)
 API_KEY = os.getenv("GIGACHAT_API_KEY", "YjllY2FhYjgtNGRlMC00MDA4LWIwZmYtNjdlNjY0ZmI5OTc4OmRkMjZhOWFjLThhNTctNGM3ZC1iZjFkLWQ3NGY1NmRjNTQzMQ==")
 DOC_PATH = "../data/documentation"
 CODE_PATH = "../data/code"
 
-# Фиксированные параметры
 DOC_CHUNK_SIZE = 1000
 DOC_CHUNK_OVERLAP = 200
 CODE_CHUNK_SIZE = 500
 CODE_CHUNK_OVERLAP = 100
 K_DOCUMENTS = 5
 
+def detect_encoding(file_path):
+    with open(file_path, 'rb') as f:
+        raw_data = f.read(10000)
+    result = chardet.detect(raw_data)
+    return result['encoding']
+
+def safe_read_text(path):
+    encoding = detect_encoding(path)
+    return Path(path).read_text(encoding=encoding, errors="ignore")
+
 @st.cache_resource
 def initialize_rag_system():
     """Инициализация RAG системы с кэшированием"""
     
     try:
-        # Проверка путей к файлам
-        doc_files = list(Path(DOC_PATH).rglob("*.md"))
-        code_files = list(Path(CODE_PATH).rglob("*.py"))
+        doc_files = list(Path(DOC_PATH).rglob("*.md"))[:3]
+        code_files = list(Path(CODE_PATH).rglob("*.py"))[:3]
         
         if not doc_files and not code_files:
             st.error("Не удалось найти документы для инициализации системы")
             return None, None
         
-        # Настройка разделителей текста
         doc_splitter = RecursiveCharacterTextSplitter(
             chunk_size=DOC_CHUNK_SIZE, 
             chunk_overlap=DOC_CHUNK_OVERLAP
@@ -61,11 +70,10 @@ def initialize_rag_system():
             chunk_overlap=CODE_CHUNK_OVERLAP
         )
         
-        # Обработка документов
         docs = []
         for file in doc_files:
             try:
-                content = Path(file).read_text(encoding="utf-8")
+                content = safe_read_text(file)
                 chunks = doc_splitter.split_text(content)
                 for chunk in chunks:
                     docs.append(Document(
@@ -75,11 +83,10 @@ def initialize_rag_system():
             except Exception as e:
                 st.warning(f"Ошибка при обработке документации: {e}")
         
-        # Обработка кода
         code_docs = []
         for file in code_files:
             try:
-                content = Path(file).read_text(encoding="utf-8")
+                content = safe_read_text(file)
                 chunks = code_splitter.split_text(content)
                 for chunk in chunks:
                     code_docs.append(Document(
@@ -89,31 +96,26 @@ def initialize_rag_system():
             except Exception as e:
                 st.warning(f"Ошибка при обработке кода: {e}")
         
-        # Объединение всех документов
         documents = docs + code_docs
         
         if not documents:
             st.error("Не удалось загрузить документы")
             return None, None
         
-        # Инициализация эмбеддингов
         embedding = GigaChatEmbeddings(
             credentials=API_KEY,
             scope="GIGACHAT_API_PERS",
             verify_ssl_certs=False,
         )
         
-        # Создание векторного хранилища
         vector_store = FAISS.from_documents(documents, embedding=embedding)
         retriever = vector_store.as_retriever(search_kwargs={"k": K_DOCUMENTS})
         
-        # Инициализация LLM
         llm = GigaChat(
             credentials=API_KEY,
             verify_ssl_certs=False,
         )
         
-        # Создание промпта
         prompt = ChatPromptTemplate.from_template('''Ты — технический помощник, работающий с библиотекой LangChain. У тебя есть доступ к документации и к исходному коду библиотеки.
 
 Твоя задача — ответить на вопрос пользователя, используя и документацию, и код. Следуй этим правилам:
@@ -147,13 +149,11 @@ def initialize_rag_system():
 
 Вопрос пользователя: {input}''')
         
-        # Создание цепочки документов
         document_chain = create_stuff_documents_chain(
             llm=llm,
             prompt=prompt
         )
         
-        # Создание цепочки поиска
         retrieval_chain = create_retrieval_chain(retriever, document_chain)
         
         return retrieval_chain, len(documents)
@@ -163,14 +163,12 @@ def initialize_rag_system():
         return None, None
 
 def main():
-    # Инициализация RAG системы
     with st.spinner("Загрузка системы..."):
         retrieval_chain, doc_count = initialize_rag_system()
     
     if retrieval_chain:
         st.success("✅ Система готова к работе!")
         
-        # Примеры вопросов
         with st.expander("📝 Примеры вопросов"):
             example_questions = [
                 "What is LangSmith?",
@@ -187,7 +185,6 @@ def main():
                 if st.button(f"📌 {example}", key=f"example_{i}"):
                     st.session_state.user_question = example
         
-        # Поле для ввода вопроса
         user_question = st.text_area(
             "Введите ваш вопрос:",
             value=st.session_state.get('user_question', ''),
@@ -195,7 +192,6 @@ def main():
             placeholder="Например: Как использовать векторные хранилища в LangChain?"
         )
         
-        # Кнопки
         col1, col2, col3 = st.columns([1, 1, 4])
         with col1:
             ask_button = st.button("🚀 Задать вопрос", type="primary")
@@ -206,18 +202,15 @@ def main():
             st.session_state.user_question = ''
             st.rerun()
         
-        # Обработка вопроса
         if ask_button and user_question.strip():
             with st.spinner("🔍 Поиск ответа..."):
                 try:
                     response = retrieval_chain.invoke({'input': user_question})
                     
-                    # Отображение ответа
                     st.markdown("---")
                     st.subheader("🤖 Ответ")
                     st.markdown(response['answer'])
                     
-                    # Отображение источников (опционально)
                     with st.expander("📚 Источники информации"):
                         for i, doc in enumerate(response['context']):
                             st.markdown(f"**Источник {i+1}:**")
@@ -238,11 +231,9 @@ def main():
     else:
         st.error("❌ Не удалось инициализировать систему. Обратитесь к администратору.")
 
-# Инициализация состояния сессии
 if 'user_question' not in st.session_state:
     st.session_state.user_question = ''
 
-# Информация о приложении в боковой панели
 with st.sidebar:
     st.markdown("### ℹ️ О приложении")
     st.markdown("""
