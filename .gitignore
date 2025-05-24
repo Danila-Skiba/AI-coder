@@ -3,4 +3,5 @@ venv
 langchain/
 html_docs/
 md_docs/
-_pycache_
+_pycache_/
+langchain_code/
