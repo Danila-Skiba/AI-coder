@@ -241,7 +241,7 @@ class SmartCodeDocSystem:
         unique_documents = []
         
         for doc in all_documents:
-            content_hash = hash(doc.page_content[:100])  # Используем начало для проверки
+            content_hash = hash(doc.page_content[:100]) 
             if content_hash not in seen_content:
                 seen_content.add(content_hash)
                 unique_documents.append(doc)

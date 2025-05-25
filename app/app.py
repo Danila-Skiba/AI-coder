@@ -66,11 +66,11 @@ def main():
 
         with st.expander("Примеры вопросов"):
             example_questions = [
-                "How to use FAISS vectorstore in LangChain?",
-                "What is LangSmith?",
-                "Какие векторные базы поддерживает LangChain?",
-                "Как реализовать собственную цепочку?",
-                "Как использовать PromptTemplate?"
+                "Что такое Tool в LangChain и как её применять?",
+                 "Как разбить документ на чанки по 500 токенов с overlap 50, используя LangChain?",
+                 "Что такое TextLoader в Langchain?",
+                "Что такое as_retriever и как он используется в Langchain?",
+                 "Как реализовать RAG через LangChain?"
             ]
 
             for i, example in enumerate(example_questions):
