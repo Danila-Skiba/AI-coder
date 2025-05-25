@@ -188,7 +188,6 @@ class SmartCodeDocSystem:
 
     def load_vector_store(self, load_path: str = "vector_store") -> bool:
         """Загружает существующее векторное хранилище"""
-        
         if os.path.exists(load_path):
             try:
                 st.write(f"Загрузка векторного хранилища из {load_path}")
