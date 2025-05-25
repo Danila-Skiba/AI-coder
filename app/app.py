@@ -17,8 +17,7 @@ st.set_page_config(
 st.title("LangChain RAG Assistant")
 st.markdown("Задайте вопрос о библиотеке LangChain")
 
-API_KEY = os.getenv("GIGACHAT_API_KEY",
-                    "Y2NkMzRlOWItMmJkOS00OWI2LTgwNWEtMzQ0NjA1ZDUyNTBlOjdlM2NmYWU5LWI0NDgtNGFkMi1hNzdhLWUwYjQ3ZjVjNmUyYQ==")
+API_KEY = "MGNlMTdlYzMtYjk3OS00ZmVlLTkzYzQtMGVmZmIyM2NkMDIzOjVlNTRkNzIzLWRhYWMtNDE2Ni1hN2IzLTc5Nzg3ODA2OTVjNQ=="
 VECTOR_STORE_PATH = "langchain_vector_store"
 
 

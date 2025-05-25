@@ -1,7 +1,7 @@
 import os
 import re
 from pathlib import Path
-from typing import List, Optional, Tuple, Dict, Any
+from typing import List
 from dataclasses import dataclass
 
 from langchain.docstore.document import Document
@@ -9,10 +9,6 @@ from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain.vectorstores import FAISS
 from langchain.schema import BaseRetriever
 from langchain.prompts import ChatPromptTemplate
-from langchain.chains.combine_documents import create_stuff_documents_chain
-from langchain.chains import create_retrieval_chain
-from langchain_gigachat.embeddings.gigachat import GigaChatEmbeddings
-from langchain_gigachat import GigaChat
 from pydantic import Field
 
 
