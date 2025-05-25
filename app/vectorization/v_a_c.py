@@ -188,19 +188,18 @@ class SmartCodeDocSystem:
 
     def load_vector_store(self, load_path: str = "vector_store") -> bool:
         """Загружает существующее векторное хранилище"""
+        
         if os.path.exists(load_path):
             try:
-                st.write(f"Загрузка векторного хранилища из {load_path}")
+                print(f"Загрузка векторного хранилища из {load_path}")
                 self.vector_store = FAISS.load_local(
                     load_path, self.embeddings, allow_dangerous_deserialization=True
                 )
-                st.write("Векторное хранилище загружено")
+                print("Векторное хранилище загружено")
                 return True
             except Exception as e:
-                st.error(f"Ошибка загрузки: {e}")
+                print(f"Ошибка загрузки: {e}")
                 return False
-        else:
-            st.error(f"Директория {load_path} не найдена")
         return False
 
     def smart_search(self, query: str, k: int = 6, related_k: int = 2) -> SearchResult:

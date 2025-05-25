@@ -7,6 +7,11 @@ from langchain_gigachat.chat_models import GigaChat
 from langchain_gigachat.embeddings.gigachat import GigaChatEmbeddings
 from langchain.embeddings import HuggingFaceEmbeddings
 from vectorization.v_a_c import SmartCodeDocSystem, SmartRetriever, create_smart_prompt
+import os
+
+from dotenv import load_dotenv
+load_dotenv()
+
 
 st.set_page_config(
     page_title="LangChain RAG Assistant",
@@ -17,22 +22,14 @@ st.set_page_config(
 st.title("LangChain RAG Assistant")
 st.markdown("Задайте вопрос о библиотеке LangChain")
 
-API_KEY = "MGNlMTdlYzMtYjk3OS00ZmVlLTkzYzQtMGVmZmIyM2NkMDIzOjVlNTRkNzIzLWRhYWMtNDE2Ni1hN2IzLTc5Nzg3ODA2OTVjNQ=="
-VECTOR_STORE_PATH = "langchain_vector_store"
+API_KEY = os.getenv("GIGACHAT_CREDENTIALS")
+VECTOR_STORE_PATH = os.path.join(os.path.dirname(__file__), "langchain_vector_store")
 
 
 @st.cache_resource
 def initialize_rag_system():
     """Инициализация RAG системы с кэшированием"""
-
     try:
-        # model_name = "sentence-transformers/paraphrase-multilingual-mpnet-base-v2"
-        # model_kwargs = {'device': 'cpu'}
-        # encode_kwargs = {'normalize_embeddings': False}
-        # embeddings = HuggingFaceEmbeddings(model_name=model_name,
-        #                                 model_kwargs=model_kwargs,
-        #                                 encode_kwargs=encode_kwargs)
-
         embeddings = GigaChatEmbeddings(
             credentials=API_KEY,
             scope="GIGACHAT_API_PERS",
@@ -40,7 +37,9 @@ def initialize_rag_system():
         )
 
         system = SmartCodeDocSystem(embeddings, chunk_size=600, chunk_overlap=100)
+        st.write("SmartCodeDocSystem создан")
 
+        
         system.load_vector_store(VECTOR_STORE_PATH)
 
         llm = GigaChat(
@@ -50,7 +49,6 @@ def initialize_rag_system():
         )
 
         smart_retriever = SmartRetriever(smart_system=system, k=150)
-
         prompt = create_smart_prompt()
         document_chain = create_stuff_documents_chain(llm=llm, prompt=prompt)
         retrieval_chain = create_retrieval_chain(smart_retriever, document_chain)
@@ -60,7 +58,6 @@ def initialize_rag_system():
     except Exception as e:
         st.error(f"Ошибка при инициализации системы: {e}")
         return None, None
-
 
 def main():
     with st.spinner("Загрузка системы..."):
