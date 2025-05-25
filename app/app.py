@@ -19,7 +19,7 @@ st.markdown("Задайте вопрос о библиотеке LangChain")
 
 API_KEY = os.getenv("GIGACHAT_API_KEY",
                     "Y2NkMzRlOWItMmJkOS00OWI2LTgwNWEtMzQ0NjA1ZDUyNTBlOjdlM2NmYWU5LWI0NDgtNGFkMi1hNzdhLWUwYjQ3ZjVjNmUyYQ==")
-VECTOR_STORE_PATH = "langchain_vector_store"
+VECTOR_STORE_PATH = "/mnt/nfs/"
 
 
 @st.cache_resource
