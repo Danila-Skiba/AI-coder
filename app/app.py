@@ -1,11 +1,9 @@
 import streamlit as st
 import os
-from pathlib import Path
 from langchain.chains.combine_documents import create_stuff_documents_chain
 from langchain.chains import create_retrieval_chain
 from langchain_gigachat.chat_models import GigaChat
 from langchain_gigachat.embeddings.gigachat import GigaChatEmbeddings
-from langchain.embeddings import HuggingFaceEmbeddings
 from vectorization.v_a_c import SmartCodeDocSystem, SmartRetriever, create_smart_prompt
 
 st.set_page_config(
