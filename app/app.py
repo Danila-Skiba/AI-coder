@@ -46,7 +46,7 @@ def initialize_rag_system():
         llm = GigaChat(
             credentials=API_KEY,
             verify_ssl_certs=False,
-            model="GigaChat-Lite"
+            model="GigaChat-Pro"
         )
 
         smart_retriever = SmartRetriever(smart_system=system, k=150)

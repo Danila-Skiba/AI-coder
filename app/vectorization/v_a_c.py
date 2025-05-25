@@ -3,7 +3,7 @@ import re
 from pathlib import Path
 from typing import List
 from dataclasses import dataclass
-
+import streamlit as st
 from langchain.docstore.document import Document
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain.vectorstores import FAISS
@@ -191,15 +191,17 @@ class SmartCodeDocSystem:
         
         if os.path.exists(load_path):
             try:
-                print(f"Загрузка векторного хранилища из {load_path}")
+                st.write(f"Загрузка векторного хранилища из {load_path}")
                 self.vector_store = FAISS.load_local(
                     load_path, self.embeddings, allow_dangerous_deserialization=True
                 )
-                print("Векторное хранилище загружено")
+                st.write("Векторное хранилище загружено")
                 return True
             except Exception as e:
-                print(f"Ошибка загрузки: {e}")
+                st.error(f"Ошибка загрузки: {e}")
                 return False
+        else:
+            st.error(f"Директория {load_path} не найдена")
         return False
 
     def smart_search(self, query: str, k: int = 6, related_k: int = 2) -> SearchResult:
