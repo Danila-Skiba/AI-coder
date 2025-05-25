@@ -3,6 +3,7 @@ BASE_URL = "https://python.langchain.com/docs/"
 HTML_DIR = "html_docs"
 MD_DIR = "md_docs"
 HTML_DOCS_CLASS = "div.theme-doc-markdown.markdown"
+HASH_FILE = "code_docs_loaders/docs_loader/md_docs_hashes.json"
 
 # Setting up code downloads
 CODE_DIR = "langchain"
