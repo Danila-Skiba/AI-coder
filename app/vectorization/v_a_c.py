@@ -6,7 +6,7 @@ from dataclasses import dataclass
 
 from langchain.docstore.document import Document
 from langchain.text_splitter import RecursiveCharacterTextSplitter
-from langchain.vectorstores import FAISS
+from langchain_community.vectorstores import FAISS
 from langchain.schema import BaseRetriever
 from langchain.prompts import ChatPromptTemplate
 from pydantic import Field
