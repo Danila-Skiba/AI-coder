@@ -43,7 +43,7 @@ def initialize_rag_system():
         llm = GigaChat(
             credentials=API_KEY,
             verify_ssl_certs=False,
-            model="GigaChat-Pro"
+            model="GigaChat-Max"
         )
 
         smart_retriever = SmartRetriever(smart_system=system, k=150)
@@ -70,7 +70,12 @@ def main():
                  "Как разбить документ на чанки по 500 токенов с overlap 50, используя LangChain?",
                  "Что такое TextLoader в Langchain?",
                 "Что такое as_retriever и как он используется в Langchain?",
-                 "Как реализовать RAG через LangChain?"
+                 "Как реализовать RAG через LangChain?",
+                 "Что такое PromptTemplate в LangChain?",
+                 "Какие методы входят в пакет langchain_core?",
+                 "Как реализовать модульный RAG из нескольких документов в LangChain?",
+                 "Как построить пайплайн действий для помощника в LangChain?",
+                 "Как правильно использовать метод invoke_run() в LangChain?"
             ]
 
             for i, example in enumerate(example_questions):

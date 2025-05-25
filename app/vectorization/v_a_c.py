@@ -81,13 +81,13 @@ class SmartCodeDocSystem:
         print("Загрузка и обработка файлов...")
         documents = []
         
-        # Обрабатываем файлы кода (.py)
+   
         print(f"Обработка кода из {code_dir}")
         code_files = list(code_dir.rglob("*.py"))
         for i, filepath in enumerate(code_files):
             try:
                 text = filepath.read_text(encoding="utf-8")
-                if len(text.strip()) < 10:  # Пропускаем слишком короткие файлы
+                if len(text.strip()) < 10: 
                     continue
                     
                 chunks = self.text_splitter.split_text(text)
@@ -109,7 +109,7 @@ class SmartCodeDocSystem:
 
         print(f"Загружено {len(code_files)} файлов кода")
         
-        # Обрабатываем документацию (.md)
+       
         print(f"Обработка документации из {doc_dir}")
         doc_files = list(doc_dir.rglob("*.md"))
         for i, filepath in enumerate(doc_files):
@@ -208,34 +208,34 @@ class SmartCodeDocSystem:
         if self.vector_store is None:
             raise ValueError("Векторное хранилище не инициализировано")
         
-        # Анализируем запрос
+    
         search_type = self.query_analyzer.analyze_query(query)
         
-        # Получаем больше результатов для лучшей фильтрации
+    
         all_results = self.vector_store.similarity_search(query, k=k*2)
         
         if search_type == "code-first":
-            # Приоритет коду, но добавляем документацию
+      
             code_chunks = [d for d in all_results if d.metadata.get("type") == "code"][:k//2+1]
             doc_chunks = [d for d in all_results if d.metadata.get("type") == "doc"][:k//2]
             primary_chunks = code_chunks
             related_chunks = doc_chunks
             
         elif search_type == "doc-first":
-            # Приоритет документации, но добавляем код
+     
             doc_chunks = [d for d in all_results if d.metadata.get("type") == "doc"][:k//2+1]
             code_chunks = [d for d in all_results if d.metadata.get("type") == "code"][:k//2]
             primary_chunks = doc_chunks
             related_chunks = code_chunks
             
-        else:  # balanced
-            # Равномерное распределение
+        else:  
+
             code_chunks = [d for d in all_results if d.metadata.get("type") == "code"][:k//2]
             doc_chunks = [d for d in all_results if d.metadata.get("type") == "doc"][:k//2]
             primary_chunks = doc_chunks + code_chunks
             related_chunks = []
         
-        # Объединяем и убираем дубликаты
+
         all_documents = primary_chunks + related_chunks
         seen_content = set()
         unique_documents = []
@@ -257,12 +257,10 @@ class SmartCodeDocSystem:
 class SmartRetriever(BaseRetriever):
     """Ретривер для LangChain, использующий умный поиск"""
     
-    # Объявляем поля для Pydantic модели
     smart_system: SmartCodeDocSystem = Field(description="Smart code documentation system")
     k: int = Field(default=6, description="Number of documents to retrieve")
     
     def __init__(self, smart_system: SmartCodeDocSystem, k: int = 6, **kwargs):
-        # Инициализируем родительский класс с полями
         super().__init__(smart_system=smart_system, k=k, **kwargs)
     
     def _get_relevant_documents(self, query: str, **kwargs) -> List[Document]:
