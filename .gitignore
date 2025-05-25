@@ -5,3 +5,4 @@ html_docs/
 md_docs/
 _pycache_/
 langchain_code/
+**/__pycache__/
