@@ -7,7 +7,7 @@ from langchain_gigachat.chat_models import GigaChat
 from langchain_gigachat.embeddings.gigachat import GigaChatEmbeddings
 from langchain.embeddings import HuggingFaceEmbeddings
 from vectorization.v_a_c import SmartCodeDocSystem, SmartRetriever, create_smart_prompt
-
+import os
 st.set_page_config(
     page_title="LangChain RAG Assistant",
     page_icon="🤖",
@@ -18,7 +18,8 @@ st.title("LangChain RAG Assistant")
 st.markdown("Задайте вопрос о библиотеке LangChain")
 
 API_KEY = "MGNlMTdlYzMtYjk3OS00ZmVlLTkzYzQtMGVmZmIyM2NkMDIzOjVlNTRkNzIzLWRhYWMtNDE2Ni1hN2IzLTc5Nzg3ODA2OTVjNQ=="
-VECTOR_STORE_PATH = "langchain_vector_store"
+
+VECTOR_STORE_PATH = os.path.join(os.path.dirname(__file__), "langchain_vector_store")
 
 
 @st.cache_resource
