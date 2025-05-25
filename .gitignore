@@ -1,0 +1,10 @@
+.env
+.idea
+venv
+langchain/
+html_docs/
+md_docs/
+_pycache_/
+langchain_code/
+**/__pycache__/
+code_docs_loaders/code_loader/latest_release.txt
