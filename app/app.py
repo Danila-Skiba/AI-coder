@@ -37,8 +37,6 @@ def initialize_rag_system():
         )
 
         system = SmartCodeDocSystem(embeddings, chunk_size=600, chunk_overlap=100)
-        st.write("SmartCodeDocSystem создан")
-
         
         system.load_vector_store(VECTOR_STORE_PATH)
 
